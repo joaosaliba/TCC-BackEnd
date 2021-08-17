@@ -15,9 +15,9 @@ Including another URLconf
 """
 from rede_auth.views.user_views import UserViewSet
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from rest_framework import routers,  serializers, viewsets
+from rest_framework import routers, serializers, viewsets
 
 router = routers.DefaultRouter()
 router.register(r'user', UserViewSet)
