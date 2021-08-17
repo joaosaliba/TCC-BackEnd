@@ -1,0 +1,22 @@
+version: '3'
+  
+services:
+  db:
+    image: 'postgres:latest'
+    ports:
+     - "5432:5432"
+    environment:
+      - POSTGRES_DB=redesocial_db
+      - POSTGRES_USER=redesocial_user
+      - POSTGRES_PASSWORD=redesocial
+      - POSTGRES_HOST=db
+  
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8040
+    volumes:
+      - .:/code
+    ports:
+      - "8040:8040"
+    depends_on:
+      - db
