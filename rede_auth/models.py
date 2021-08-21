@@ -32,3 +32,14 @@ class Student(User):
     class Meta:
         verbose_name = _('Aluno')
         verbose_name_plural = _('Aluno')
+
+
+class Teacher(User):
+    cpf = models.CharField(max_length=15, blank=True)
+    consumer_external_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, blank=True)
+    birthdate = models.DateField(auto_now=False, auto_now_add=False, default="1980-01-01", blank=True)
+    picture = models.FileField(
+        _('picture'), blank=True, default='member-default.jpg')
+    class Meta:
+        verbose_name = _('Professor')
+        verbose_name_plural = _('Professor')
