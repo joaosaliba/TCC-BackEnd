@@ -1,3 +1,4 @@
+import uuid
 from typing import Coroutine
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -9,7 +10,7 @@ class User(AbstractUser):
     email = models.EmailField(('email address'), unique=True)
 
     phonenumber = models.CharField(max_length=20, blank=True)
-    passwordconfirmation = models.CharField(('password confirmation'), max_length=128)
+    password_confirmation = models.CharField(('password confirmation'), max_length=128)
     USER_TYPE_CHOICES = (
         ('Professor','Professor'),
         ('Aluno','Aluno'),
@@ -20,3 +21,14 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
 User._meta.get_field('username')._unique = False
+
+
+class Student(User):
+    cpf = models.CharField(max_length=15, blank=True)
+    consumer_external_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, blank=True)
+    birthdate = models.DateField(auto_now=False, auto_now_add=False, default="1990-01-01", blank=True)
+    picture = models.FileField(
+        _('picture'), blank=True, default='member-default.jpg')
+    class Meta:
+        verbose_name = _('Aluno')
+        verbose_name_plural = _('Aluno')
