@@ -13,18 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from rede_auth.views.user_views import UserViewSet
+from rede_auth.views.user_views import StudentViewSet
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers, serializers, viewsets
+from django.views.static import serve 
+from . import settings
 
 router = routers.DefaultRouter()
-router.register(r'user', UserViewSet)
+router.register(r'Aluno', StudentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    #path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}), 
+    #path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 
 ]
 
 urlpatterns += staticfiles_urlpatterns()
