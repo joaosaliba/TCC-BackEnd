@@ -22,7 +22,7 @@ class StudentViewSet(MixedPermissionModelViewSet):
     serializer_class = StudentSerializer
 
     permission_classes_by_action = {'create': [AllowAny],
-                                    'list': [AllowAny],
+                                    'list': [IsAuthenticated],
                                     'delete': [IsSameUser],
                                     'update': [IsSameUser],
                                     'partial_update': [IsSameUser]
@@ -38,7 +38,7 @@ class TeacherViewSet(MixedPermissionModelViewSet):
     serializer_class = TeacherSerializer
 
     permission_classes_by_action = {'create': [AllowAny],
-                                    'list': [AllowAny],
+                                    'list': [IsAuthenticated],
                                     'delete': [IsSameUser],
                                     'update': [IsSameUser],
                                     'partial_update': [IsSameUser]
@@ -47,4 +47,4 @@ class TeacherViewSet(MixedPermissionModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return super().get_queryset()
-        return Student.objects.filter(id=self.request.user.id)
+        return self.queryset
