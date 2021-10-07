@@ -11,6 +11,9 @@ class User(AbstractUser):
 
     phonenumber = models.CharField(max_length=20, blank=True)
     password_confirmation = models.CharField(('password confirmation'), max_length=128)
+    jwt_secret = models.UUIDField(default=uuid.uuid4)
+    recipient_id = models.CharField(max_length=300, null=True)
+    player_id = models.CharField(max_length=200, null=True)
     USER_TYPE_CHOICES = (
         ('Professor','Professor'),
         ('Aluno','Aluno'),

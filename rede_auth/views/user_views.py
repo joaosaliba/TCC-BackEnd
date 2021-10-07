@@ -31,7 +31,7 @@ class StudentViewSet(MixedPermissionModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return super().get_queryset()
-        return Student.objects.filter(id=self.request.user.id)
+        return self.queryset
 
 class TeacherViewSet(MixedPermissionModelViewSet):
     queryset = Teacher.objects.all()

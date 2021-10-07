@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
+import datetime
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,6 +63,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
         # 'rest_framework.permissions.IsAdminUser'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_FILTER_BACKENDS': (
@@ -149,6 +153,16 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_ALLOW_REFRESH': True,
+    # 'JWT_GET_USER_SECRET_KEY': 'rede_auth.models.jwt_get_secret_key',
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'rede_auth.serializers.webtoken_serializer.jwt_response_payload_handler',
+}
+
+
 
 STATIC_URL = '/static/'
 
