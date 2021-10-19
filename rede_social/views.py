@@ -1,13 +1,38 @@
+import json
 from django.db.models import query
 from django.shortcuts import render
-from rest_framework import viewsets
-from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
+from django.http import HttpResponse
+
 from rede_auth.permissions import IsSameUser
+from rede_auth.models import User
+
+from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
-from rede_social.models import Profile
+from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
+from rede_social.models import Following, Profile
 
-# Create your views here.
+
+def follow(request, user_to_follow):
+    main_user = request.user
+    to_follow = User.objects.get(email=user_to_follow.email)
+    main_user_followers = Following.objects.filter(user=main_user, followed=to_follow)
+    is_following = True if main_user_followers else False
+    if is_following:
+        Following.unfollow(main_user, to_follow)
+        is_following = False
+    else:
+        Following.follow(main_user, to_follow)
+        is_following = True
+
+    context = {
+        "following?":is_following
+    }
+    response = json.dumps(context)
+
+    return HttpResponse(response, content_type='aplication/json')
+
+
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
@@ -33,3 +58,5 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return ProfileSerializer
         else:
             return ProfileGetSerializer
+
+
