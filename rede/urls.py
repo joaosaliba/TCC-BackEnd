@@ -21,10 +21,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve 
+from django.conf.urls.static import static
 
 #rest
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
+
+from rede_social.views import ProfileViewSet
 
 from . import settings
 from rede_auth.views.webtoken_views import *
@@ -33,6 +36,7 @@ from rede_auth.views.webtoken_views import *
 router = routers.DefaultRouter()
 router.register(r'Aluno', StudentViewSet)
 router.register(r'Profesor', TeacherViewSet)
+router.register(r'Profile', ProfileViewSet)
 
 
 urlpatterns = [
@@ -45,3 +49,4 @@ urlpatterns = [
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

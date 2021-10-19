@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rede_auth',
+    'rede_social',
     'corsheaders',
 ]
 
