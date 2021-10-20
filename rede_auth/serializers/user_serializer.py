@@ -1,4 +1,5 @@
 from rede_auth.models import Student, Teacher, User
+from rede_social.models import Profile
 from rest_framework import serializers, routers
 from rest_framework import routers, serializers, viewsets
 from rede_auth.helpers import validate_cpf
@@ -64,6 +65,9 @@ class StudentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['username'] = validated_data['email'].split('@')[0]
         user = Student.objects.create_user(**validated_data)
+        profile = Profile.objects.create(user=user)
+        profile.save()
+        print("######################### Criando Profile: ", profile)
         user.password_confirmation = ''
         user.user_type = "Aluno"
         user.save()
@@ -137,6 +141,9 @@ class TeacherSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['username'] = validated_data['email'].split('@')[0]
         user = Student.objects.create_user(**validated_data)
+        profile = Profile.objects.create(user=user)
+        profile.save()
+        print("######################### Criando Profile: ", profile)
         user.password_confirmation = ''
         user.user_type = "Professor"
         user.save()

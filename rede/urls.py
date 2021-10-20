@@ -34,9 +34,9 @@ from rede_auth.views.webtoken_views import *
 
 
 router = routers.DefaultRouter()
-router.register(r'Aluno', StudentViewSet)
-router.register(r'Profesor', TeacherViewSet)
-router.register(r'Profile', ProfileViewSet)
+router.register(r'aluno', StudentViewSet)
+router.register(r'profesor', TeacherViewSet)
+router.register(r'profile', ProfileViewSet)
 
 
 urlpatterns = [

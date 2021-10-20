@@ -8,6 +8,7 @@ from rede_auth.models import User
 
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rede_auth.views.mixed_view import MixedPermissionModelViewSet
 
 from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
 from rede_social.models import Following, Profile
@@ -34,12 +35,12 @@ def follow(request, user_to_follow):
 
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(MixedPermissionModelViewSet):
     queryset = Profile.objects.all()
-    serializer_class = ProfileGetSerializer
+    serializer_class = ProfileSerializer
     permission_classes_by_action = {
         'create': [IsAdminUser],
-        'list': [IsSameUser],
+        'list': [AllowAny],
         'delete': [IsSameUser],
         'update': [IsSameUser],
         'partial_update': [IsSameUser]
@@ -48,6 +49,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return super().get_queryset()
+        try:
+            id = self.request.query_params.get('id', None)
+            if id is not None:
+                user = User.objects.get(id = id)
+                return self.queryset.filter(user=user)
+        except TypeError as e:
+            pass
         return self.queryset
 
     def get_serializer_class(self):

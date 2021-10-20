@@ -31,6 +31,12 @@ class StudentViewSet(MixedPermissionModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return super().get_queryset()
+        try:
+            id = self.request.query_params.get('id', None)
+            if id is not None:
+                return self.queryset.filter(id=int(id))
+        except TypeError as e:
+            pass
         return self.queryset
 
 class TeacherViewSet(MixedPermissionModelViewSet):
@@ -47,4 +53,10 @@ class TeacherViewSet(MixedPermissionModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return super().get_queryset()
+        try:
+            id = self.request.query_params.get('id', None)
+            if id is not None:
+                return self.queryset.filter(id=int(id))
+        except TypeError as e:
+            pass
         return self.queryset

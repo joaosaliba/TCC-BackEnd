@@ -138,6 +138,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'rede_auth.User'
 
+
+ADMINS = [
+    ['caiogabriel','caio@redesocial.com'],
+    ['joaogabriel','joao@redesocial.com']
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
