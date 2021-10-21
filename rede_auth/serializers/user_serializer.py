@@ -5,6 +5,8 @@ from rest_framework import routers, serializers, viewsets
 from rede_auth.helpers import validate_cpf
 from django.contrib.auth import password_validation
 
+from rede_social.serializers.profile_serializer import ProfileGetSerializer
+
 class UserSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(
         max_length=100, write_only=True, required=False)
@@ -87,6 +89,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class StudentGetSerializer(serializers.ModelSerializer):
+    profile = ProfileGetSerializer(source='profile')
 
     class Meta:
         model = Student
@@ -100,6 +103,7 @@ class StudentGetSerializer(serializers.ModelSerializer):
             'cpf',
             'user_type',
             'customer_address',
+            'profile'
         ]
 
 class TeacherSerializer(serializers.ModelSerializer):
@@ -163,6 +167,7 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class TeacherGetSerializer(serializers.ModelSerializer):
+    profile = ProfileGetSerializer(source='profile')
 
     class Meta:
         model = Teacher
@@ -176,4 +181,5 @@ class TeacherGetSerializer(serializers.ModelSerializer):
             'cpf',
             'user_type',
             'customer_address',
+            'profile'
         ]

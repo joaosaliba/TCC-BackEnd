@@ -58,7 +58,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -97,6 +100,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'rede.wsgi.application'
+
+BASE_URL = 'http://127.0.0.1:8040'
 
 
 # Database

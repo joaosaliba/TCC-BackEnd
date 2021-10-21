@@ -3,15 +3,17 @@ from django.db.models import query
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from rede_auth.permissions import IsSameUser
+from rede_auth.views.mixed_view import MixedPermissionModelViewSet
+from rede_auth.permissions import IsSameUser, IsTeacher
 from rede_auth.models import User
 
+from rest_framework.serializers import Serializer
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from rede_auth.views.mixed_view import MixedPermissionModelViewSet
 
+from rede_social.serializers.category_serializer import CategorySerializer
 from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
-from rede_social.models import Following, Profile
+from rede_social.models import Category, Following, Profile
 
 
 def follow(request, user_to_follow):
@@ -33,7 +35,49 @@ def follow(request, user_to_follow):
 
     return HttpResponse(response, content_type='aplication/json')
 
+class PostViewSet(MixedPermissionModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes_by_action = {
+        'create': [IsAuthenticated],
+        'list': [IsAuthenticated],
+        'delete': [IsSameUser],
+        'update': [IsSameUser],
+        'partial_update':[IsSameUser]
+    }
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return super().get_queryset()
+        try:
+            id = self.request.query_params.get('id', None)
+            if id is not None:
+                user = User.objects.get(id = id)
+                return self.queryset.filter(user=user)
+        except TypeError as e:
+            pass
+        return self.queryset 
 
+class CategoryViewSet(MixedPermissionModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes_by_action = {
+        'create': [IsTeacher],
+        'list': [IsAuthenticated],
+        'delete': [IsTeacher],
+        'update': [IsTeacher],
+        'partial_update':[IsTeacher]
+    }
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return super().get_queryset()
+        try:
+            id = self.request.query_params.get('id', None)
+            if id is not None:
+                user = User.objects.get(id = id)
+                return self.queryset.filter(user=user)
+        except TypeError as e:
+            pass
+        return self.queryset    
 
 class ProfileViewSet(MixedPermissionModelViewSet):
     queryset = Profile.objects.all()

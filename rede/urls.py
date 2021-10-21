@@ -27,16 +27,18 @@ from django.conf.urls.static import static
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
-from rede_social.views import ProfileViewSet
+from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet
 
-from . import settings
+from django.conf import settings
 from rede_auth.views.webtoken_views import *
 
 
 router = routers.DefaultRouter()
 router.register(r'aluno', StudentViewSet)
-router.register(r'profesor', TeacherViewSet)
+router.register(r'professor', TeacherViewSet)
 router.register(r'profile', ProfileViewSet)
+router.register(r'category', CategoryViewSet)
+router.register(r'post', PostViewSet)
 
 
 urlpatterns = [

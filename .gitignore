@@ -128,3 +128,4 @@ libvenv/
 libvenv
 .cenv/
 .env
+rede/static/
