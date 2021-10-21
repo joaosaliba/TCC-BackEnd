@@ -12,8 +12,9 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from rede_social.serializers.category_serializer import CategorySerializer
+from rede_social.serializers.post_serializer import PostSerializer
 from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
-from rede_social.models import Category, Following, Profile
+from rede_social.models import Category, Following, Post, Profile
 
 
 def follow(request, user_to_follow):
@@ -36,8 +37,8 @@ def follow(request, user_to_follow):
     return HttpResponse(response, content_type='aplication/json')
 
 class PostViewSet(MixedPermissionModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
     permission_classes_by_action = {
         'create': [IsAuthenticated],
         'list': [IsAuthenticated],
