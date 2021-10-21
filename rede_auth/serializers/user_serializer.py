@@ -89,7 +89,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class StudentGetSerializer(serializers.ModelSerializer):
-    profile = ProfileGetSerializer(source='profile')
+    profile = ProfileGetSerializer()
 
     class Meta:
         model = Student
@@ -100,9 +100,8 @@ class StudentGetSerializer(serializers.ModelSerializer):
             'birthdate',
             'phonenumber',
             'picture',
-            'cpf',
             'user_type',
-            'customer_address',
+            'cpf',
             'profile'
         ]
 
@@ -167,7 +166,7 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class TeacherGetSerializer(serializers.ModelSerializer):
-    profile = ProfileGetSerializer(source='profile')
+    profile = ProfileGetSerializer()
 
     class Meta:
         model = Teacher
@@ -178,8 +177,7 @@ class TeacherGetSerializer(serializers.ModelSerializer):
             'birthdate',
             'phonenumber',
             'picture',
-            'cpf',
             'user_type',
-            'customer_address',
+            'cpf',
             'profile'
         ]
