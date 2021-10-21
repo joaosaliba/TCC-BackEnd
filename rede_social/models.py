@@ -25,12 +25,6 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
-    
-    def __str__(self):
-        return force_bytes('%s' % self.name)
-
-    def __unicode__(self):
-        return u'%s' % self.name
 
 class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -40,12 +34,6 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL'), related_name='posts', on_delete=models.CASCADE)
 
-    def __str__(self):
-        # Use django.utils.encoding.force_bytes() because value returned is unicode
-        return force_bytes('%s' % self.title)
-
-    def __unicode__(self):
-        return u'%s' % self.title
 
 class Announcement(models.Model):
     title = models.CharField(_('Title'), max_length=200)
@@ -59,14 +47,6 @@ class Announcement(models.Model):
 
     class Meta:
         ordering = ['-created_at', ]
-
-    def __str__(self):
-        # Use django.utils.encoding.force_bytes() because value returned is unicode
-        return force_bytes('%s' % self.title)
-
-    def __unicode__(self):
-        return u'%s' % self.title
-
 
 class Following(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -14,7 +14,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rede_social.serializers.category_serializer import CategorySerializer
 from rede_social.serializers.post_serializer import PostSerializer
 from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
-from rede_social.models import Category, Following, Post, Profile
+from rede_social.serializers.announcement_serializer import AnnouncementSerializer
+from rede_social.models import Announcement, Category, Following, Post, Profile
 
 
 def follow(request, user_to_follow):
@@ -35,6 +36,31 @@ def follow(request, user_to_follow):
     response = json.dumps(context)
 
     return HttpResponse(response, content_type='aplication/json')
+
+class AnnouncementViewSet(MixedPermissionModelViewSet):
+    queryset = Announcement.objects.all()
+    serializer_class = AnnouncementSerializer
+    permission_classes_by_action = {
+        'create': [IsAdminUser, IsTeacher],
+        'list': [AllowAny],
+        'delete': [IsAdminUser],
+        'update': [IsAdminUser],
+        'partial_update': [IsAdminUser]
+    }
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return super().get_queryset()
+        try:
+            id = self.request.query_params.get('id', None)
+            if id is not None:
+                user = User.objects.get(id = id)
+                return self.queryset.filter(user=user)
+        except TypeError as e:
+            pass
+        return self.queryset
+
+
 
 class PostViewSet(MixedPermissionModelViewSet):
     queryset = Post.objects.all()

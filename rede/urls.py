@@ -27,7 +27,7 @@ from django.conf.urls.static import static
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
-from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet
+from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet, AnnouncementViewSet
 
 from django.conf import settings
 from rede_auth.views.webtoken_views import *
@@ -39,6 +39,7 @@ router.register(r'professor', TeacherViewSet)
 router.register(r'profile', ProfileViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'post', PostViewSet)
+router.register(r'announcement', AnnouncementViewSet)
 
 
 urlpatterns = [
