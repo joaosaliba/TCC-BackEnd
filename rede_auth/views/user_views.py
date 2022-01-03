@@ -43,6 +43,7 @@ class StudentViewSet(MixedPermissionModelViewSet):
 
     def get_serializer_class(self):
         # delete_users_and_channels()
+        print('########################', self.request.path)
         if self.request.method == "GET":
             return StudentGetSerializer
         elif self.request.method in ['PUT', 'PATCH', 'POST']:

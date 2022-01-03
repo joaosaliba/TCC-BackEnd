@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, DjangoModelPermissions
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.exceptions import PermissionDenied
 from rede_auth.models import *
