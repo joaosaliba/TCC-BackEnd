@@ -13,21 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-#models
+# models
 from rede_auth.views.user_views import StudentViewSet, TeacherViewSet
 
-#django
+# django
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.static import serve 
+from django.views.static import serve
 from django.conf.urls.static import static
 
-#rest
+# rest
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
-from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet, AnnouncementViewSet
+from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet, AnnouncementViewSet, CommentsViewSet
 
 from django.conf import settings
 from rede_auth.views.webtoken_views import *
@@ -40,6 +40,7 @@ router.register(r'profile', ProfileViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'post', PostViewSet)
 router.register(r'announcement', AnnouncementViewSet)
+router.register(r'comments', CommentsViewSet)
 
 
 urlpatterns = [
@@ -47,8 +48,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', MyObtainJSONWebToken.as_view(), name='login_jwt'),
-    #path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}), 
-    #path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 
+    #path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    #path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
