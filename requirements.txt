@@ -44,3 +44,4 @@ pycep-correios
 django-environ==0.4.5
 googlemaps
 daphne==3.0.0
+django-currentuser

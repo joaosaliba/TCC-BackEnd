@@ -1,34 +1,38 @@
+from rede_social.serializers.profile_serializer import ProfileGetSerializer
+from attr import fields
 from rede_auth.models import Student, Teacher, User
 from rede_social.models import Profile
 from rest_framework import serializers, routers
 from rest_framework import routers, serializers, viewsets
 from rede_auth.helpers import validate_cpf
 from django.contrib.auth import password_validation
+from django.db.models import ImageField
 
 from rede_social.serializers.profile_serializer import ProfileGetSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(
         max_length=100, write_only=True, required=False)
-        
+
     class Meta:
-        model=User
+        model = User
         fields = [
             'id',
             'nome',
             'user_type',
             'email',
             'password',
-            'password_confirmation',
             'old_password',
             'phonenumber',
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'password_confirmation': {'write_only': True},
         }
 
+
 class StudentSerializer(serializers.ModelSerializer):
+    picture = serializers.ImageField(allow_empty_file=True, required=False)
 
     class Meta:
         model = Student
@@ -37,7 +41,6 @@ class StudentSerializer(serializers.ModelSerializer):
             'nome',
             'email',
             'password',
-            'password_confirmation',
             'birthdate',
             'phonenumber',
             'picture',
@@ -46,8 +49,8 @@ class StudentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'password_confirmation': {'write_only': True},
-            'user_type': {'read_only': True}
+            'user_type': {'read_only': True},
+            'picture': {'required': False}
         }
 
     def validate_password(self, value):
@@ -56,7 +59,7 @@ class StudentSerializer(serializers.ModelSerializer):
         except serializers.ValidationError as exc:
             raise serializers.ValidationError(str(exc))
         return value
-    
+
     def validate(self, data):
         # add here additional check for password strength if needed
         if data.get('password_confirmation') != data.get('password'):
@@ -64,6 +67,7 @@ class StudentSerializer(serializers.ModelSerializer):
                 {'password': 'A senha precisa ser confirmada corretamente'})
 
         return data
+
     def create(self, validated_data):
         validated_data['username'] = validated_data['email'].split('@')[0]
         user = Student.objects.create_user(**validated_data)
@@ -78,14 +82,13 @@ class StudentSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        for key in validated_data.keys():
-            if 'password' != key:
-                instance.__setattr__(key, validated_data[key])
+        for field in validated_data:
+            if field == 'password':
+                instance.set_password(validated_data.get(field))
             else:
-                instance.set_password(validated_data[key])
-        instance.password_confirmation = ''
-        instance.save()
-        return instance   
+                instance.__setattr__(field, validated_data.get(field))
+            instance.save()
+        return instance
 
 
 class StudentGetSerializer(serializers.ModelSerializer):
@@ -105,7 +108,9 @@ class StudentGetSerializer(serializers.ModelSerializer):
             'profile'
         ]
 
+
 class TeacherSerializer(serializers.ModelSerializer):
+    picture = serializers.ImageField(allow_empty_file=True, required=False)
 
     class Meta:
         model = Teacher
@@ -114,7 +119,6 @@ class TeacherSerializer(serializers.ModelSerializer):
             'nome',
             'email',
             'password',
-            'password_confirmation',
             'birthdate',
             'phonenumber',
             'picture',
@@ -123,8 +127,9 @@ class TeacherSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'password_confirmation': {'write_only': True},
-            'user_type': {'read_only': True}
+            'user_type': {'read_only': True},
+            'picture': {'required': False}
+
         }
 
     def validate_password(self, value):
@@ -133,7 +138,7 @@ class TeacherSerializer(serializers.ModelSerializer):
         except serializers.ValidationError as exc:
             raise serializers.ValidationError(str(exc))
         return value
-    
+
     def validate(self, data):
         # add here additional check for password strength if needed
         if data.get('password_confirmation') != data.get('password'):
@@ -141,9 +146,10 @@ class TeacherSerializer(serializers.ModelSerializer):
                 {'password': 'A senha precisa ser confirmada corretamente'})
 
         return data
+
     def create(self, validated_data):
         validated_data['username'] = validated_data['email'].split('@')[0]
-        user = Student.objects.create_user(**validated_data)
+        user = Teacher.objects.create_user(**validated_data)
         profile = Profile.objects.create(user=user)
         profile.save()
         print("######################### Criando Profile: ", profile)
@@ -155,14 +161,13 @@ class TeacherSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        for key in validated_data.keys():
-            if 'password' != key:
-                instance.__setattr__(key, validated_data[key])
+        for field in validated_data:
+            if field == 'password':
+                instance.set_password(validated_data.get(field))
             else:
-                instance.set_password(validated_data[key])
-        instance.password_confirmation = ''
-        instance.save()
-        return instance   
+                instance.__setattr__(field, validated_data.get(field))
+            instance.save()
+        return instance
 
 
 class TeacherGetSerializer(serializers.ModelSerializer):
