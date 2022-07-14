@@ -129,3 +129,5 @@ libvenv
 .cenv/
 .env
 rede/static/
+
+/media
