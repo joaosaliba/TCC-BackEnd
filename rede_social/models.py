@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from tkinter import CASCADE
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.encoding import force_bytes
@@ -6,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
 from rede_auth.models import User
 from django.conf import settings
+from django_currentuser.db.models import CurrentUserField
 
 import logging
 
@@ -16,8 +18,15 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, primary_key=True, related_name='profile', on_delete=models.CASCADE)
     bio = models.CharField(max_length=500, blank=True, null=True)
-    birth_date = models.DateField(null=True, blank=True)
+    birthdate = models.DateField(
+        auto_now=False, auto_now_add=False, default="1990-01-01", blank=True)
     location = models.CharField(max_length=100, blank=True, null=True)
+    follows = models.ManyToManyField(
+        "self", related_name="followed_by", symmetrical=False, blank=True
+    )
+
+    def __str__(self):
+        return self.user.username
 
 
 class Category(models.Model):
@@ -28,17 +37,20 @@ class Category(models.Model):
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
+    def __str__(self):
+        return self.name
+
 
 class Post(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    title = models.CharField(_('Title'), max_length=200)
-    body = models.TextField(_('Body'), )
-    post_image = models.ImageField
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, null=True, blank=True)
+    body = models.TextField(_('Body'), null=False, blank=False)
+    post_image = models.ImageField(_('post_image'), blank=True)
     reply_to = models.ForeignKey(
         'self', blank=True, null=True, related_name='child', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(getattr(
-        settings, 'AUTH_USER_MODEL'), related_name='posts', on_delete=models.CASCADE)
+    created_by = CurrentUserField(
+        related_name='created_by', on_delete=models.CASCADE)
 
 
 class Comments(models.Model):
@@ -49,8 +61,8 @@ class Comments(models.Model):
     reply_to = models.ForeignKey(
         'self', blank=True, null=True, related_name='post_reply', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(getattr(
-        settings, 'AUTH_USER_MODEL'), related_name='comments', on_delete=models.CASCADE)
+    commented_by = CurrentUserField(
+        related_name='commented_by', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.comment
@@ -59,12 +71,22 @@ class Comments(models.Model):
         ordering = ['-created_at', ]
 
 
+class PostLike(models.Model):
+    liked = models.BooleanField(null=True)
+    liked_post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    liked_by = CurrentUserField(
+        related_name='postlike', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.liked_post)
+
+
 class Announcement(models.Model):
     title = models.CharField(_('Title'), max_length=200)
     body = models.TextField(_('Body'), )
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL'),
-                                   related_name='announcers', editable=False, on_delete=models.CASCADE)
+    created_by = CurrentUserField(
+        related_name='announcers', editable=False, on_delete=models.CASCADE)
     announce_from = models.DateTimeField(
         _('Announce from'), null=True, blank=True)
     announce_to = models.DateTimeField(_('Announce to'), null=True, blank=True)

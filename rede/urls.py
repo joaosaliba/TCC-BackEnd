@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # models
-from rede_auth.views.user_views import StudentViewSet, TeacherViewSet
+from rede_auth.views.user_views import StudentViewSet, TeacherViewSet, UserViewSet
 
 # django
 from django.contrib import admin
@@ -34,6 +34,7 @@ from rede_auth.views.webtoken_views import *
 
 
 router = routers.DefaultRouter()
+router.register(r'user', UserViewSet)
 router.register(r'aluno', StudentViewSet)
 router.register(r'professor', TeacherViewSet)
 router.register(r'profile', ProfileViewSet)

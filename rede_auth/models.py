@@ -16,6 +16,8 @@ class User(AbstractUser):
     jwt_secret = models.UUIDField(default=uuid.uuid4)
     recipient_id = models.CharField(max_length=300, null=True)
     player_id = models.CharField(max_length=200, null=True)
+    created_at = models.DateField(
+        auto_now=True, blank=True)
     USER_TYPE_CHOICES = (
         ('Professor', 'Professor'),
         ('Aluno', 'Aluno'),
@@ -33,8 +35,6 @@ class Student(User):
     cpf = models.CharField(max_length=15, blank=True)
     consumer_external_id = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True, blank=True)
-    birthdate = models.DateField(
-        auto_now=False, auto_now_add=False, default="1990-01-01", blank=True)
 
     class Meta:
         verbose_name = _('Aluno')
@@ -45,8 +45,6 @@ class Teacher(User):
     cpf = models.CharField(max_length=15, blank=True)
     consumer_external_id = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True, blank=True)
-    birthdate = models.DateField(
-        auto_now=False, auto_now_add=False, default="1980-01-01", blank=True)
 
     class Meta:
         verbose_name = _('Professor')
