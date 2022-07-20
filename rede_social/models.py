@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
 from rede_auth.models import User
 from django.conf import settings
-from django_currentuser.db.models import CurrentUserField
 
 import logging
 
@@ -27,6 +26,27 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Following(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    followed = models.ManyToManyField(User, related_name="followed")
+
+    @classmethod
+    def follow(cls, user, another_account):
+        obj, create = cls.objects.get_or_create(user=user)
+        obj.followed.add(another_account)
+        pass
+
+    @classmethod
+    def unfollow(cls, user, another_account):
+        obj, create = cls.objects.get_or_create(user=user)
+        obj.followed.remove(another_account)
+
+        pass
+
+    def __str__(self):
+        return str(self.user.username)
 
 
 class Category(models.Model):
@@ -49,8 +69,28 @@ class Post(models.Model):
     reply_to = models.ForeignKey(
         'self', blank=True, null=True, related_name='child', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = CurrentUserField(
+    created_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
         related_name='created_by', on_delete=models.CASCADE)
+
+    def get_user(self):
+        user = vars(self.created_by)
+        return {"id": user["id"], "email": user["email"]}
+
+    def get_likes_count(self):
+        return PostLike.objects.filter(liked=True, liked_post=self).count()
+
+    def get_dislikes_count(self):
+        return PostLike.objects.filter(liked=False, liked_post=self).count()
+
+    def get_comments(self):
+        return Comments.objects.filter(post=self.pk)
+
+    def get_comments_count(self):
+        return Comments.objects.filter(post=self.pk).count()
+
+    def __str__(self):
+        return self.body
 
 
 class Comments(models.Model):
@@ -61,7 +101,8 @@ class Comments(models.Model):
     reply_to = models.ForeignKey(
         'self', blank=True, null=True, related_name='post_reply', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    commented_by = CurrentUserField(
+    commented_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
         related_name='commented_by', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -74,7 +115,8 @@ class Comments(models.Model):
 class PostLike(models.Model):
     liked = models.BooleanField(null=True)
     liked_post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    liked_by = CurrentUserField(
+    liked_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
         related_name='postlike', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -85,7 +127,8 @@ class Announcement(models.Model):
     title = models.CharField(_('Title'), max_length=200)
     body = models.TextField(_('Body'), )
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = CurrentUserField(
+    created_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
         related_name='announcers', editable=False, on_delete=models.CASCADE)
     announce_from = models.DateTimeField(
         _('Announce from'), null=True, blank=True)
@@ -95,24 +138,3 @@ class Announcement(models.Model):
 
     class Meta:
         ordering = ['-created_at', ]
-
-
-class Following(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    followed = models.ManyToManyField(User, related_name="followed")
-
-    @classmethod
-    def follow(cls, user, another_account):
-        obj, create = cls.objects.get_or_create(user=user)
-        obj.followed.add(another_account)
-        pass
-
-    @classmethod
-    def unfollow(cls, user, another_account):
-        obj, create = cls.objects.get_or_create(user=user)
-        obj.followed.remove(another_account)
-
-        pass
-
-    def __str__(self):
-        return str(self.user.username)

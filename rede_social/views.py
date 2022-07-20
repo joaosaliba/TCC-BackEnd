@@ -1,4 +1,5 @@
 import json
+from unicodedata import category
 from django.db.models import query
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -13,10 +14,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from rede_social.serializers.category_serializer import CategorySerializer
 from rede_social.serializers.post_serializer import PostSerializer
-from rede_social.serializers.comments_serializer import CommentsSerializer
+from rede_social.serializers.comments_serializer import CommentsSerializer, CommentsGetSerializer
+from rede_social.serializers.like_post_serializer import PostLikeSerializer
+
 from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
 from rede_social.serializers.announcement_serializer import AnnouncementSerializer
-from rede_social.models import Announcement, Category, Following, Post, Profile
+from rede_social.models import Announcement, Category, Following, Post, Profile, Comments, PostLike
+
+from rest_framework.decorators import action
+from django.http import JsonResponse
 
 
 def follow(request, user_to_follow):
@@ -81,18 +87,21 @@ class PostViewSet(MixedPermissionModelViewSet):
         try:
             id = self.request.query_params.get('id', None)
             if id is not None:
-                user = User.objects.get(id=id)
-                return self.queryset.filter(user=user)
+                post = Post.objects.get(id=id)
+                return self.queryset.filter(post=post)
         except TypeError as e:
             pass
         return self.queryset
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
 class CategoryViewSet(MixedPermissionModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes_by_action = {
-        'create': [IsTeacher],
+        'create': [AllowAny],
         'list': [IsAuthenticated],
         'delete': [IsTeacher],
         'update': [IsTeacher],
@@ -103,10 +112,10 @@ class CategoryViewSet(MixedPermissionModelViewSet):
         if self.request.user.is_superuser:
             return super().get_queryset()
         try:
-            id = self.request.query_params.get('id', None)
-            if id is not None:
-                user = User.objects.get(id=id)
-                return self.queryset.filter(user=user)
+            pk = self.request.query_params.get('pk', None)
+            if pk is not None:
+                category = Category.objects.get(pk=pk)
+                return self.queryset.filter(category=category)
         except TypeError as e:
             pass
         return self.queryset
@@ -146,7 +155,7 @@ class ProfileViewSet(MixedPermissionModelViewSet):
 
 
 class CommentsViewSet(MixedPermissionModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
     permission_classes_by_action = {
         'create': [IsAuthenticated],
@@ -155,6 +164,15 @@ class CommentsViewSet(MixedPermissionModelViewSet):
         'update': [IsSameUser],
         'partial_update': [IsSameUser]
     }
+
+    @action(detail=False, methods=['GET'], name='Get comments from Post')
+    def postComments(request, postId):
+        queryset = Comments.objects.filter(
+            post_id=postId)
+
+        serializer = CommentsGetSerializer(queryset, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -167,3 +185,11 @@ class CommentsViewSet(MixedPermissionModelViewSet):
         except TypeError as e:
             pass
         return self.queryset
+
+    def perform_create(self, serializer):
+        serializer.save(commented_by=self.request.user)
+
+
+class PostLikeViewSet(MixedPermissionModelViewSet):
+    queryset = PostLike.objects.all()
+    serializer_class = PostLikeSerializer

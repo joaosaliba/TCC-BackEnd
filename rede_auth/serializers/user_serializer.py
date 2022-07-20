@@ -1,3 +1,4 @@
+import profile
 from rede_social.serializers.profile_serializer import ProfileGetSerializer, ProfileSerializer
 from attr import fields
 from rede_auth.models import Student, Teacher, User
@@ -67,8 +68,9 @@ class UserSerializer(serializers.ModelSerializer):
         if(userType == "Aluno"):
             user = Student.objects.create_user(**validated_data)
 
-        profile = Profile.objects.create(
-            user=user, birthdate=profile_data['birthdate'], location=profile_data['location'])
+        profile = Profile.objects.create(user=user)
+        for field in profile_data:
+            profile.__setattr__(field, profile_data.get(field))
         profile.save()
         print("######################### Criando Profile: ", profile)
 
@@ -80,12 +82,18 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
+        profile = Profile.objects.get(user=instance)
+        profile_data = validated_data.pop('profile')
+        for field in profile_data:
+            profile.__setattr__(field, profile_data.get(field))
+        profile.save()
         for field in validated_data:
             if field == 'password':
                 instance.set_password(validated_data.get(field))
             else:
                 instance.__setattr__(field, validated_data.get(field))
-            instance.save()
+
+        instance.save()
         return instance
 
 

@@ -28,6 +28,7 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
 from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet, AnnouncementViewSet, CommentsViewSet
+from rede_social.views import PostLikeViewSet
 
 from django.conf import settings
 from rede_auth.views.webtoken_views import *
@@ -35,13 +36,14 @@ from rede_auth.views.webtoken_views import *
 
 router = routers.DefaultRouter()
 router.register(r'user', UserViewSet)
-router.register(r'aluno', StudentViewSet)
-router.register(r'professor', TeacherViewSet)
+# router.register(r'aluno', StudentViewSet)
+# router.register(r'professor', TeacherViewSet)
 router.register(r'profile', ProfileViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'post', PostViewSet)
 router.register(r'announcement', AnnouncementViewSet)
 router.register(r'comments', CommentsViewSet)
+router.register(r'likePost', PostLikeViewSet)
 
 
 urlpatterns = [
@@ -49,8 +51,11 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', MyObtainJSONWebToken.as_view(), name='login_jwt'),
-    #path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
-    #path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+    # path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    # path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+
+    path('comments/postComments/<int:postId>/',
+         CommentsViewSet.postComments, name='postComments'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
