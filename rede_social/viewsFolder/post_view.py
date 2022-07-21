@@ -3,6 +3,7 @@
 from rede_auth.permissions import IsSameUser
 from rede_auth.views.mixed_view import MixedPermissionModelViewSet
 from rede_social.models import Post
+from rede_social.pagination.LargeResultsSetPagination import LargeResultsSetPagination, StandardResultsSetPagination
 
 from rede_social.serializers.post_serializer import PostSerializer, PostGetSerializer
 
@@ -14,6 +15,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 class PostViewSet(MixedPermissionModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    pagination_class = StandardResultsSetPagination
     permission_classes_by_action = {
         'create': [IsAuthenticated],
         'list': [IsAuthenticated],
