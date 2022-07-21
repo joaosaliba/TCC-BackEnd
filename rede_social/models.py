@@ -93,12 +93,16 @@ class Post(models.Model):
     def __str__(self):
         return self.body
 
+    class Meta:
+        ordering = ['-created_at', ]
+
 
 class Comments(models.Model):
     post = models.ForeignKey(
         Post, related_name='post_comment', on_delete=models.CASCADE)
     comment = models.CharField(max_length=4000)
-    comment_image = models.ImageField(null=True, blank=True)
+    comment_image = models.ImageField(
+        _('comment_image'), null=True, blank=True)
     reply_to = models.ForeignKey(
         'self', blank=True, null=True, related_name='comment_reply', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

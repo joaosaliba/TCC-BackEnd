@@ -34,7 +34,6 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostGetSerializer(serializers.ModelSerializer):
     created_by = UserToPostGetSerializer(read_only=True)
-    post_comment = CommentsGetSerializer(many=True)
 
     class Meta:
         model = Post
@@ -47,5 +46,4 @@ class PostGetSerializer(serializers.ModelSerializer):
             'reply_to',
             'created_at',
             'created_by',
-            'post_comment',
         ]

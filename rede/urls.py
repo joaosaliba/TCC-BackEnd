@@ -59,8 +59,8 @@ urlpatterns = [
     # path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     # path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 
-    path('comments/postComments/<int:postId>/',
-         CommentsViewSet.postComments, name='postComments'),
+    path('comments/postComments/<int:pk>/',
+         CommentsViewSet.as_view({'get': 'commetsOfPosts'}), name='postComments'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

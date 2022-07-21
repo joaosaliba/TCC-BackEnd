@@ -4,6 +4,8 @@ from rede_social.models import Comments
 
 
 class CommentsSerializer(serializers.ModelSerializer):
+    commented_by = UserToPostGetSerializer(read_only=True)
+
     class Meta:
         model = Comments
         fields = [
@@ -16,6 +18,15 @@ class CommentsSerializer(serializers.ModelSerializer):
 
         ]
 
+    def create(self, validated_data):
+        comment = Comments.objects.create(**validated_data)
+        comment.save()
+        return comment
+
+    def update(self, instance, validated_data):
+        instance.save()
+        return instance
+
 
 class CommentsGetSerializer(serializers.ModelSerializer):
     commented_by = UserToPostGetSerializer(read_only=True)
@@ -23,10 +34,12 @@ class CommentsGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
         fields = [
+            'id',
             'comment',
             'comment_image',
             'reply_to',
             'created_at',
             'commented_by',
+            'post'
 
         ]
