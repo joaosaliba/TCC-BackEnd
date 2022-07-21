@@ -22,12 +22,17 @@ from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.conf.urls.static import static
+from rede_social.viewsFolder.announcements_view import AnnouncementViewSet
+from rede_social.viewsFolder.category_view import CategoryViewSet
+from rede_social.viewsFolder.comments_view import CommentsViewSet
+from rede_social.viewsFolder.post_view import PostViewSet
+from rede_social.viewsFolder.profile_view import ProfileViewSet
 
 # rest
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
-from rede_social.views import CategoryViewSet, PostViewSet, ProfileViewSet, AnnouncementViewSet, CommentsViewSet
+
 from rede_social.views import PostLikeViewSet
 
 from django.conf import settings

@@ -100,7 +100,7 @@ class Comments(models.Model):
     comment = models.CharField(max_length=4000)
     comment_image = models.ImageField(null=True, blank=True)
     reply_to = models.ForeignKey(
-        'self', blank=True, null=True, related_name='post_reply', on_delete=models.CASCADE)
+        'self', blank=True, null=True, related_name='comment_reply', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     commented_by = models.ForeignKey(getattr(
         settings, 'AUTH_USER_MODEL'),

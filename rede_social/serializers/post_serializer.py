@@ -5,6 +5,8 @@ from rede_social.models import Comments, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
+    created_by = UserToPostGetSerializer(read_only=True)
+
     class Meta:
         model = Post
         fields = [
@@ -25,6 +27,9 @@ class PostSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.save()
         return instance
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
 class PostGetSerializer(serializers.ModelSerializer):

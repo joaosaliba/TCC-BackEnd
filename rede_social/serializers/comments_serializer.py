@@ -1,3 +1,4 @@
+from rede_auth.serializers.user_serializer import UserToPostGetSerializer
 from rest_framework import serializers
 from rede_social.models import Comments
 
@@ -17,6 +18,7 @@ class CommentsSerializer(serializers.ModelSerializer):
 
 
 class CommentsGetSerializer(serializers.ModelSerializer):
+    commented_by = UserToPostGetSerializer(read_only=True)
 
     class Meta:
         model = Comments
