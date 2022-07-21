@@ -1,16 +1,16 @@
-#rest
+# rest
 from rest_framework_jwt.serializers import *
 from rest_framework import routers, serializers
 
-#django
+# django
 from django.contrib.auth.hashers import make_password
 from django.utils.translation import ugettext as _
 from django.template.loader import get_template
 
-#models
+# models
 from rede_auth.models import *
 
-#serializers
+# serializers
 from rede_auth.serializers.user_serializer import *
 
 
@@ -31,8 +31,6 @@ class MyJSONWebTokenSerializer(JSONWebTokenSerializer):
 
     Returns a JSON Web Token that can be used to authenticate later calls.
     """
-    device_type = serializers.ChoiceField(write_only=True,choices=(('ANDROID', 'ANDROID'),('APPLE', 'APPLE')))
-    device_id = serializers.CharField(write_only=True, allow_null=True, required=False)
 
     def __init__(self, *args, **kwargs):
         """
@@ -47,15 +45,11 @@ class MyJSONWebTokenSerializer(JSONWebTokenSerializer):
         credentials = {
             self.username_field: attrs.get(self.username_field),
             'password': attrs.get('password'),
-            'device_type': attrs.get('device_type')
         }
-        print("############################# credenciais", credentials['email'])
+        print("############################# credenciais",
+              credentials['email'])
         if all(credentials.values()):
-            if 'device_id' in attrs.keys():
-                did = attrs.pop('device_id')
-            else:
-                did = None
-            dtype = credentials.pop('device_type')
+
             try:
                 user = authenticate(**credentials)
                 print("############################# credenciais", credentials)
@@ -66,7 +60,7 @@ class MyJSONWebTokenSerializer(JSONWebTokenSerializer):
                 if not user.is_active:
                     msg = _('User account is disabled.')
                     raise serializers.ValidationError({"email": msg})
-                
+
                 payload = jwt_payload_handler(user)
                 print("payload foi")
                 token = jwt_encode_handler(payload)

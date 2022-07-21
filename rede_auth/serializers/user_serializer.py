@@ -119,6 +119,24 @@ class UserGetSerializer(serializers.ModelSerializer):
         }
 
 
+class UserToPostGetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'nome',
+            'email',
+            'picture',
+            'user_type',
+            'profile',
+        ]
+        extra_kwargs = {
+            'user_type': {'read_only': True},
+            'profile': {'required': False},
+        }
+
+
 class StudentSerializer(serializers.ModelSerializer):
     picture = serializers.ImageField(allow_empty_file=True, required=False)
     password_confirmation = serializers.CharField(required=False)

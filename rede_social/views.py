@@ -13,7 +13,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from rede_social.serializers.category_serializer import CategorySerializer
-from rede_social.serializers.post_serializer import PostSerializer
+from rede_social.serializers.post_serializer import PostSerializer, PostGetSerializer
 from rede_social.serializers.comments_serializer import CommentsSerializer, CommentsGetSerializer
 from rede_social.serializers.like_post_serializer import PostLikeSerializer
 
@@ -95,6 +95,15 @@ class PostViewSet(MixedPermissionModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    def get_serializer_class(self):
+        # delete_users_and_channels()
+        if self.request.method == "GET":
+            return PostGetSerializer
+        elif self.request.method in ['PUT', 'PATCH', 'POST']:
+            return PostSerializer
+        else:
+            return PostGetSerializer
 
 
 class CategoryViewSet(MixedPermissionModelViewSet):
