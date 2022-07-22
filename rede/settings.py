@@ -14,6 +14,8 @@ from pathlib import Path
 import datetime
 import os
 
+from numpy import True_
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'rede_auth',
     'rede_social',
     'corsheaders',
+    'emailer',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -193,3 +196,10 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'felicidaderede@gmail.com'
+EMAIL_HOST_PASSWORD = 'wrdxgiuwejsyjxul'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

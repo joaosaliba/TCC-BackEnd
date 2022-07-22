@@ -37,7 +37,7 @@ from rede_social.views import PostLikeViewSet
 
 from django.conf import settings
 from rede_auth.views.webtoken_views import *
-
+from emailer import urls as URLmailer
 
 router = routers.DefaultRouter()
 router.register(r'user', UserViewSet)
@@ -54,6 +54,7 @@ router.register(r'likePost', PostLikeViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('mailer', include(URLmailer)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', MyObtainJSONWebToken.as_view(), name='login_jwt'),
     # path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
