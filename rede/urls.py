@@ -61,6 +61,10 @@ urlpatterns = [
 
     path('comments/postComments/<int:pk>/',
          CommentsViewSet.as_view({'get': 'commetsOfPosts'}), name='postComments'),
+
+    path('post/user/<int:pk>/',
+         PostViewSet.as_view({'get': 'postsOfuser'}), name='postsOfuser'),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

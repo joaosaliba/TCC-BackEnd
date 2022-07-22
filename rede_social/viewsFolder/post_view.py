@@ -47,3 +47,15 @@ class PostViewSet(MixedPermissionModelViewSet):
             return PostSerializer
         else:
             return PostGetSerializer
+
+    def postsOfuser(self, request, pk=None):
+
+        queryset = Post.objects.filter(
+            created_by=pk)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
