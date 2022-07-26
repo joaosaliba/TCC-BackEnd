@@ -1,6 +1,10 @@
 
+from django.dispatch import receiver
+from emailer.views import send
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.urls import reverse
 import datetime
-#views
+# views
 from rede_auth.serializers.webtoken_serializer import jwt_response_payload_handler
 
 # settings
@@ -8,7 +12,7 @@ from django.conf import settings
 # serializers
 from rede_auth.serializers.webtoken_serializer import MyJSONWebTokenSerializer
 
-#django
+# django
 from django.conf import settings
 
 # Django rest
@@ -21,6 +25,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import *
 
 from rest_condition import Or
+
 
 class MyObtainJSONWebToken(ObtainJSONWebToken):
     serializer_class = MyJSONWebTokenSerializer
@@ -46,3 +51,19 @@ class MyObtainJSONWebToken(ObtainJSONWebToken):
             return response
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+
+    email_plaintext_message = "{}?token={}".format(
+        ('http://localhost:8081/newPassword'), reset_password_token.key)
+
+    send(
+        # title:
+        "Password Reset para {title}".format(title="Rede Felicidade"),
+        # message:
+        email_plaintext_message,
+        # to:
+        [reset_password_token.user.email]
+    )
