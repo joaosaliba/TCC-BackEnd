@@ -15,7 +15,7 @@ services:
     build: .
     command: /bin/bash -l -c 'python3 manage.py makemigrations && 
                               python3 manage.py migrate &&
-                              daphne -b 0.0.0.0 -p 8040 rede.asgi:application'
+                              python manage.py runserver 0:8040'
     volumes:
       - .:/code
     ports:

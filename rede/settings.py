@@ -14,6 +14,8 @@ from pathlib import Path
 import datetime
 import os
 
+from numpy import True_
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -41,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_rest_passwordreset',
     'rede_auth',
     'rede_social',
     'corsheaders',
+    'emailer',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -81,6 +85,9 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.MultiPartParser",
         "rest_framework.parsers.FileUploadParser",
     ),
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
 }
 
 ROOT_URLCONF = 'rede.urls'
@@ -88,7 +95,8 @@ ROOT_URLCONF = 'rede.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'emailer/emailsTemplates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -190,3 +198,10 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'felicidaderede@gmail.com'
+EMAIL_HOST_PASSWORD = 'wrdxgiuwejsyjxul'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

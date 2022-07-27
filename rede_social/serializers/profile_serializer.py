@@ -4,13 +4,23 @@ from rest_framework import serializers
 from rede_social.models import Profile
 
 
+class ProfileUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = [
+            'bio',
+            'birthdate',
+            'location',
+        ]
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
             'user',
             'bio',
-            'birth_date',
+            'birthdate',
             'location',
         ]
 
@@ -21,7 +31,6 @@ class ProfileGetSerializer(serializers.ModelSerializer):
         fields = [
             'user',
             'bio',
-            'birth_date',
+            'birthdate',
             'location',
         ]
-
