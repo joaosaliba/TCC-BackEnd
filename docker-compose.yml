@@ -3,8 +3,11 @@ version: '3'
 services:
   db:
     image: 'postgres:latest'
+    container_name: data_base
     ports:
      - "5432:5432"
+    networks: 
+    - redefelicidade
     environment:
       - POSTGRES_DB=redesocial_db
       - POSTGRES_USER=redesocial_user
@@ -12,13 +15,17 @@ services:
       - POSTGRES_HOST=db
   
   web:
+    container_name: backend
     build: .
     command: /bin/bash -l -c 'python3 manage.py makemigrations && 
                               python3 manage.py migrate &&
                               python manage.py runserver 0:8040'
+    networks: 
+      - redefelicidade
     volumes:
       - .:/code
     ports:
       - "8040:8040"
     depends_on:
       - db
+     
