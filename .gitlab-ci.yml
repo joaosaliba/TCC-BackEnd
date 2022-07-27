@@ -18,7 +18,7 @@ deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd redesocial &&
                                                                          git pull origin master  --rebase &&
                                                                          docker-compose down --remove-orphans &&
-                                                                         docker-compose up -d"                                                                      
+                                                                         docker-compose up"                                                                      
   environment:
     name: production
     url: http://168.138.155.178
