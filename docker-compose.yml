@@ -28,4 +28,8 @@ services:
       - "8040:8040"
     depends_on:
       - db
-     
+
+networks:
+  redefelicidade:
+    external:
+      name: redefelicidade

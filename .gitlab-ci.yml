@@ -21,6 +21,6 @@ deploy:
                                                                          docker-compose up"                                                                      
   environment:
     name: production
-    url: http://168.138.155.178
+    url: http://api.redefelicidade.duckdns.org
   only:
     - master
