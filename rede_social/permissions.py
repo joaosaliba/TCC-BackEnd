@@ -13,4 +13,4 @@ class hasSelfVotedOrReadOnly(permissions.BasePermission):
             return True
 
         # Write permissions are only allowed to the owner of the snippet.
-        return obj.like == request.user or obj.dislike == request.user
+        return obj.liked_by == request.user or obj.dislike_by == request.user

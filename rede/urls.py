@@ -24,6 +24,7 @@ from django.views.static import serve
 from django.conf.urls.static import static
 from rede_social.viewsFolder.announcements_view import AnnouncementViewSet
 from rede_social.viewsFolder.category_view import CategoryViewSet
+from rede_social.viewsFolder.comments_like_view import CommentLikeViewSet
 from rede_social.viewsFolder.comments_view import CommentsViewSet
 from rede_social.viewsFolder.post_like_view import PostLikeViewSet
 from rede_social.viewsFolder.post_view import PostViewSet
@@ -48,6 +49,7 @@ router.register(r'post', PostViewSet)
 router.register(r'announcement', AnnouncementViewSet)
 router.register(r'comments', CommentsViewSet)
 router.register(r'likePost', PostLikeViewSet)
+router.register(r'likeComment', CommentLikeViewSet)
 
 
 urlpatterns = [

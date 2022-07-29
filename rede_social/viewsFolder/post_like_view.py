@@ -14,11 +14,11 @@ class PostLikeViewSet(MixedPermissionModelViewSet):
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
     permission_classes_by_action = {
-        'create': [IsAuthenticated, hasSelfVotedOrReadOnly],
+        'create': [IsAuthenticated],
         'list': [IsAuthenticated],
-        'delete': [IsSameUser, hasSelfVotedOrReadOnly],
-        'update': [IsSameUser, hasSelfVotedOrReadOnly],
-        'partial_update': [IsSameUser, hasSelfVotedOrReadOnly]
+        'delete': [IsSameUser],
+        'update': [IsSameUser],
+        'partial_update': [IsSameUser]
     }
 
     def perform_create(self, serializer):

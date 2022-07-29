@@ -30,6 +30,10 @@ class CommentsSerializer(serializers.ModelSerializer):
 
 class CommentsGetSerializer(serializers.ModelSerializer):
     commented_by = UserToPostGetSerializer(read_only=True)
+    dislikes_count = serializers.IntegerField(
+        source='get_dislikes_count', read_only=True)
+    likes_count = serializers.IntegerField(
+        source='get_likes_count', read_only=True)
 
     class Meta:
         model = Comments
@@ -40,6 +44,8 @@ class CommentsGetSerializer(serializers.ModelSerializer):
             'reply_to',
             'created_at',
             'commented_by',
-            'post'
+            'post',
+            'dislikes_count',
+            'likes_count'
 
         ]
