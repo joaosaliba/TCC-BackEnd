@@ -82,7 +82,7 @@ class Post(models.Model):
         return PostLike.objects.filter(disliked_by=None, liked_post=self).count()
 
     def get_dislikes_count(self):
-        return PostLike.objects.filter(liked=None, liked_post=self).count()
+        return PostLike.objects.filter(liked_by=None, liked_post=self).count()
 
     def get_comments(self):
         return Comments.objects.filter(post=self.pk)
