@@ -25,6 +25,7 @@ from django.conf.urls.static import static
 from rede_social.viewsFolder.announcements_view import AnnouncementViewSet
 from rede_social.viewsFolder.category_view import CategoryViewSet
 from rede_social.viewsFolder.comments_view import CommentsViewSet
+from rede_social.viewsFolder.post_like_view import PostLikeViewSet
 from rede_social.viewsFolder.post_view import PostViewSet
 from rede_social.viewsFolder.profile_view import ProfileViewSet
 
@@ -32,8 +33,6 @@ from rede_social.viewsFolder.profile_view import ProfileViewSet
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
-
-from rede_social.views import PostLikeViewSet
 
 from django.conf import settings
 from rede_auth.views.webtoken_views import *
