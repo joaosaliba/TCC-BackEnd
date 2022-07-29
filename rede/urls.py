@@ -58,6 +58,7 @@ urlpatterns = [
     path('mailer', include(URLmailer)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', MyObtainJSONWebToken.as_view(), name='login_jwt'),
+    path('logout_token/', APILogoutView.as_view(), name='logout_token'),
     path(r'api/password_reset/',
          include('django_rest_passwordreset.urls', namespace='password_reset')),
 

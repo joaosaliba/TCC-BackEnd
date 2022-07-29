@@ -1,4 +1,8 @@
 
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from django.dispatch import receiver
 from emailer.views import send
 from django_rest_passwordreset.signals import reset_password_token_created
@@ -51,6 +55,19 @@ class MyObtainJSONWebToken(ObtainJSONWebToken):
             return response
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class APILogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        if self.request.data.get('all'):
+            token: OutstandingToken
+            for token in OutstandingToken.objects.filter(user=request.user):
+                _, _ = BlacklistedToken.objects.get_or_create(token=token)
+            return Response({"status": "OK, goodbye, all refresh tokens blacklisted"})
+
+        return Response({"status": "OK, goodbye"})
 
 
 @receiver(reset_password_token_created)
