@@ -14,7 +14,7 @@ class PostLikeViewSet(MixedPermissionModelViewSet):
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
     permission_classes_by_action = {
-        'create': [IsAuthenticated],
+        'create': [IsAuthenticated, hasSelfVotedOrReadOnly],
         'list': [IsAuthenticated],
         'delete': [IsSameUser, hasSelfVotedOrReadOnly],
         'update': [IsSameUser, hasSelfVotedOrReadOnly],
@@ -30,9 +30,14 @@ class PostLikeViewSet(MixedPermissionModelViewSet):
             already_up_voted = PostLike.objects.filter(
                 liked_post=post_instance, liked_by=self.request.user).exists()
             if already_up_voted:
-                raise serializers.ValidationError(
-                    {"message": "Voce ja deu  like neste Post"})
+                already_down_voted = PostLike.objects.filter(
+                    liked_post=post_instance, disliked_by=self.request.user).exists()
             else:
+                already_down_voted = PostLike.objects.filter(
+                    liked_post=post_instance, disliked_by=self.request.user).exists()
+                if already_down_voted:
+                    PostLike.objects.filter(
+                        liked_post=post_instance, disliked_by=self.request.user).delete()
                 serializer.save(liked_by=self.request.user,
                                 liked_post=post_instance)
         # if dislikes
@@ -40,8 +45,13 @@ class PostLikeViewSet(MixedPermissionModelViewSet):
             already_down_voted = PostLike.objects.filter(
                 liked_post=post_instance, disliked_by=self.request.user).exists()
             if already_down_voted:
-                raise serializers.ValidationError(
-                    {"message": "Voce ja deu disliked neste Post"})
+                PostLike.objects.filter(
+                    liked_post=post_instance, disliked_by=self.request.user).delete()
             else:
+                already_up_voted = PostLike.objects.filter(
+                    liked_post=post_instance, liked_by=self.request.user).exists()
+                if already_up_voted:
+                    PostLike.objects.filter(
+                        liked_post=post_instance, liked_by=self.request.user).delete()
                 serializer.save(disliked_by=self.request.user,
                                 liked_post=post_instance)
