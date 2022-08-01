@@ -46,7 +46,7 @@ class Following(models.Model):
         pass
 
     def __str__(self):
-        return str(self.user.username)
+        return str(self.user.email)
 
 
 class Category(models.Model):
@@ -63,7 +63,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, null=True, blank=True)
+        Category, on_delete=models.CASCADE, default=None, null=True, blank=True)
     body = models.TextField(_('Body'), null=False, blank=False)
     post_image = models.ImageField(_('post_image'), blank=True)
     post_file = models.FileField(_('post_file'), blank=True)
@@ -79,10 +79,10 @@ class Post(models.Model):
         return {"id": user["id"], "email": user["email"]}
 
     def get_likes_count(self):
-        return PostLike.objects.filter(liked=True, liked_post=self).count()
+        return PostLike.objects.filter(disliked_by=None, liked_post=self).count()
 
     def get_dislikes_count(self):
-        return PostLike.objects.filter(liked=False, liked_post=self).count()
+        return PostLike.objects.filter(liked_by=None, liked_post=self).count()
 
     def get_comments(self):
         return Comments.objects.filter(post=self.pk)
@@ -113,16 +113,35 @@ class Comments(models.Model):
     def __str__(self):
         return self.comment
 
+    def get_likes_count(self):
+        return CommentLike.objects.filter(comment_disliked_by=None, liked_comment=self).count()
+
+    def get_dislikes_count(self):
+        return CommentLike.objects.filter(comment_liked_by=None, liked_comment=self).count()
+
     class Meta:
         ordering = ['-created_at', ]
 
 
+class CommentLike(models.Model):
+    liked_comment = models.ForeignKey(Comments, on_delete=models.CASCADE)
+    comment_liked_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
+        related_name='comment_liked_by', on_delete=models.CASCADE,  default=None, blank=True, null=True)
+    comment_disliked_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'), related_name='comment_disliked_by', on_delete=models.CASCADE, default=None, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.liked_post)
+
+
 class PostLike(models.Model):
-    liked = models.BooleanField(null=True)
     liked_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     liked_by = models.ForeignKey(getattr(
         settings, 'AUTH_USER_MODEL'),
-        related_name='postlike', on_delete=models.CASCADE)
+        related_name='liked_by', on_delete=models.CASCADE,  default=None, blank=True, null=True)
+    disliked_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'), related_name='disliked_by', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
     def __str__(self):
         return str(self.liked_post)

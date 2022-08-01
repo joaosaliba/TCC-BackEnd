@@ -24,7 +24,9 @@ from django.views.static import serve
 from django.conf.urls.static import static
 from rede_social.viewsFolder.announcements_view import AnnouncementViewSet
 from rede_social.viewsFolder.category_view import CategoryViewSet
+from rede_social.viewsFolder.comments_like_view import CommentLikeViewSet
 from rede_social.viewsFolder.comments_view import CommentsViewSet
+from rede_social.viewsFolder.post_like_view import PostLikeViewSet
 from rede_social.viewsFolder.post_view import PostViewSet
 from rede_social.viewsFolder.profile_view import ProfileViewSet
 
@@ -32,8 +34,6 @@ from rede_social.viewsFolder.profile_view import ProfileViewSet
 from rest_framework import routers, serializers, viewsets
 from rest_framework_simplejwt import views as jwt_views
 
-
-from rede_social.views import PostLikeViewSet
 
 from django.conf import settings
 from rede_auth.views.webtoken_views import *
@@ -49,6 +49,7 @@ router.register(r'post', PostViewSet)
 router.register(r'announcement', AnnouncementViewSet)
 router.register(r'comments', CommentsViewSet)
 router.register(r'likePost', PostLikeViewSet)
+router.register(r'likeComment', CommentLikeViewSet)
 
 
 urlpatterns = [
@@ -57,6 +58,7 @@ urlpatterns = [
     path('mailer', include(URLmailer)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', MyObtainJSONWebToken.as_view(), name='login_jwt'),
+    path('logout_token/', APILogoutView.as_view(), name='logout_token'),
     path(r'api/password_reset/',
          include('django_rest_passwordreset.urls', namespace='password_reset')),
 
