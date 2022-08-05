@@ -20,18 +20,18 @@ from rede_auth.views.user_views import StudentViewSet, TeacherViewSet, UserViewS
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.static import serve
 from django.conf.urls.static import static
 from rede_social.viewsFolder.announcements_view import AnnouncementViewSet
 from rede_social.viewsFolder.category_view import CategoryViewSet
 from rede_social.viewsFolder.comments_like_view import CommentLikeViewSet
 from rede_social.viewsFolder.comments_view import CommentsViewSet
+from rede_social.viewsFolder.follow_view import FollowViewSet
 from rede_social.viewsFolder.post_like_view import PostLikeViewSet
 from rede_social.viewsFolder.post_view import PostViewSet
 from rede_social.viewsFolder.profile_view import ProfileViewSet
 
 # rest
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers
 from rest_framework_simplejwt import views as jwt_views
 
 
@@ -50,6 +50,7 @@ router.register(r'announcement', AnnouncementViewSet)
 router.register(r'comments', CommentsViewSet)
 router.register(r'likePost', PostLikeViewSet)
 router.register(r'likeComment', CommentLikeViewSet)
+router.register(r'follow', FollowViewSet)
 
 
 urlpatterns = [

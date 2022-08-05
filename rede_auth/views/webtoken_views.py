@@ -74,7 +74,7 @@ class APILogoutView(APIView):
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
     email_plaintext_message = "{}?token={}".format(
-        ('http://localhost:8081/newPassword'), reset_password_token.key)
+        ('http://redefelicidade.duckdns.org/newPassword'), reset_password_token.key)
 
     send(
         # title:

@@ -27,23 +27,31 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+    def get_follow_count(self):
+        return Following.objects.filter(user=self.user).follow.count()
+
+    def get_follower_count(self):
+        return Following.objects.filter(follow=self.user).count()
+
 
 class Following(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    followed = models.ManyToManyField(User, related_name="followed")
+    follow = models.ManyToManyField(User, related_name="follow")
 
     @classmethod
     def follow(cls, user, another_account):
         obj, create = cls.objects.get_or_create(user=user)
-        obj.followed.add(another_account)
+        obj.follow.add(another_account)
         pass
 
     @classmethod
     def unfollow(cls, user, another_account):
         obj, create = cls.objects.get_or_create(user=user)
-        obj.followed.remove(another_account)
+        obj.follow.remove(another_account)
 
-        pass
+    class Meta:
+        verbose_name = 'Following'
+        verbose_name_plural = 'Following'
 
     def __str__(self):
         return str(self.user.email)

@@ -21,7 +21,6 @@ class PostSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, fields):
-        print('################### entrou validart')
         if len(fields.get('body').strip()) < 1 or fields.get('body') == 'null':
             raise serializers.ValidationError(
                 {'body': 'A mensagem do post deve ser preenchido.'})
