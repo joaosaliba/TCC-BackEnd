@@ -30,8 +30,8 @@ class PostLikeViewSet(MixedPermissionModelViewSet):
             already_up_voted = PostLike.objects.filter(
                 liked_post=post_instance, liked_by=self.request.user).exists()
             if already_up_voted:
-                already_down_voted = PostLike.objects.filter(
-                    liked_post=post_instance, disliked_by=self.request.user).exists()
+                PostLike.objects.filter(
+                    liked_post=post_instance, liked_by=self.request.user).delete()
             else:
                 already_down_voted = PostLike.objects.filter(
                     liked_post=post_instance, disliked_by=self.request.user).exists()

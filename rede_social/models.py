@@ -64,7 +64,7 @@ class Category(models.Model):
 class Post(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, default=None, null=True, blank=True)
-    body = models.TextField(_('Body'), null=False, blank=False)
+    body = models.TextField(_('body'), null=False, blank=False)
     post_image = models.ImageField(_('post_image'), blank=True)
     post_file = models.FileField(_('post_file'), blank=True)
     reply_to = models.ForeignKey(

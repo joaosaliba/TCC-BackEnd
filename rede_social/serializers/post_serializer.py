@@ -1,4 +1,4 @@
-from numpy import source
+from numpy import empty, source
 from rede_auth.serializers.user_serializer import UserToPostGetSerializer
 from rede_social.serializers.comments_serializer import CommentsGetSerializer
 from rest_framework import serializers
@@ -19,6 +19,13 @@ class PostSerializer(serializers.ModelSerializer):
             'created_at',
             'created_by',
         ]
+
+    def validate(self, fields):
+        print('################### entrou validart')
+        if len(fields.get('body').strip()) < 1 or fields.get('body') == 'null':
+            raise serializers.ValidationError(
+                {'body': 'A mensagem do post deve ser preenchido.'})
+        return fields
 
     def create(self, validated_data):
         post = Post.objects.create(**validated_data)
