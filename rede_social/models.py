@@ -35,6 +35,11 @@ class Profile(models.Model):
             followin=self.user)
         return follows
 
+    def get_followin(self):
+        followin = Following.objects.filter(
+            user=self.user)
+        return followin
+
 
 class Following(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
