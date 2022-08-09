@@ -30,8 +30,8 @@ class CommentLikeViewSet(MixedPermissionModelViewSet):
             already_up_voted = CommentLike.objects.filter(
                 liked_comment=comment_instance, comment_liked_by=self.request.user).exists()
             if already_up_voted:
-                already_down_voted = CommentLike.objects.filter(
-                    liked_comment=comment_instance, comment_disliked_by=self.request.user).exists()
+                CommentLike.objects.filter(
+                    liked_comment=comment_instance, comment_liked_by=self.request.user).delete()
             else:
                 already_down_voted = CommentLike.objects.filter(
                     liked_comment=comment_instance, comment_disliked_by=self.request.user).exists()

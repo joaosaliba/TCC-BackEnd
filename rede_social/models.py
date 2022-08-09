@@ -20,34 +20,36 @@ class Profile(models.Model):
     birthdate = models.DateField(
         auto_now=False, auto_now_add=False, default="1990-01-01", blank=True)
     location = models.CharField(max_length=100, blank=True, null=True)
-    follows = models.ManyToManyField(
-        "self", related_name="followed_by", symmetrical=False, blank=True
-    )
 
     def __str__(self):
         return self.user.username
 
     def get_follow_count(self):
-        return Following.objects.filter(user=self.user).follow.count()
+        return Following.objects.filter(user=self.user).count()
 
     def get_follower_count(self):
-        return Following.objects.filter(follow=self.user).count()
+        return Following.objects.filter(followin=self.user).count()
+
+    def get_follows(self):
+        follows = Following.objects.filter(
+            followin=self.user)
+        return follows
 
 
 class Following(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    follow = models.ManyToManyField(User, related_name="follow")
+    followin = models.ManyToManyField(User, related_name="followin")
 
     @classmethod
     def follow(cls, user, another_account):
         obj, create = cls.objects.get_or_create(user=user)
-        obj.follow.add(another_account)
+        obj.followin.add(another_account)
         pass
 
     @classmethod
     def unfollow(cls, user, another_account):
         obj, create = cls.objects.get_or_create(user=user)
-        obj.follow.remove(another_account)
+        obj.followin.remove(another_account)
 
     class Meta:
         verbose_name = 'Following'

@@ -25,9 +25,9 @@ class FollowViewSet(MixedPermissionModelViewSet):
 
     def create(self, serializer):
         main_user = self.request.user
-        to_follow = User.objects.get(pk=self.request.data['follow'])
+        to_follow = User.objects.get(pk=self.request.data['followin'])
         main_user_followers = Following.objects.filter(
-            user=main_user, follow=to_follow)
+            user=main_user, followin=to_follow)
         is_following = True if main_user_followers else False
         queryset = Following.objects.filter(
             user=main_user)
