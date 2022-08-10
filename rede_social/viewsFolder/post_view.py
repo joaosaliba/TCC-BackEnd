@@ -30,8 +30,6 @@ class PostViewSet(MixedPermissionModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            print("###############super")
-
             return super().get_queryset()
         try:
             followigs = Profile.get_followin(

@@ -6,11 +6,17 @@ from rede_auth.permissions import *
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
+from rest_framework import filters
+
+from rede_social.pagination.LargeResultsSetPagination import StandardResultsSetPagination
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
+    pagination_class = StandardResultsSetPagination
     serializer_class = UserSerializer
+    search_fields = ['nome', 'email']
+    filter_backends = [filters.SearchFilter]
     permission_classes_by_action = {'create': [AllowAny],
                                     'list': [IsAuthenticated],
                                     'delete': [IsSameUser],
