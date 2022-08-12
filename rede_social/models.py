@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
 from rede_auth.models import User
 from django.conf import settings
-
+from django.db.models import Count
 import logging
 
 # Create your models here.
@@ -65,8 +65,20 @@ class Following(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField('Name', max_length=150)
+    name = models.CharField('Name', max_length=150, default="feed")
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
+        related_name='category_created_by', default=None, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+
+    def get_participants_count(self):
+        user_count = Post.objects.distinct().filter(
+            category=self.pk).values('created_by').count()
+        # user.annotate(
+        #     user_count=Count('created_by', distinct=True))
+
+        return user_count
 
     class Meta:
         verbose_name = 'Category'

@@ -29,3 +29,6 @@ class CategoryViewSet(MixedPermissionModelViewSet):
         except TypeError as e:
             pass
         return self.queryset
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)

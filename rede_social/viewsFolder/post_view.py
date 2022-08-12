@@ -31,6 +31,9 @@ class PostViewSet(MixedPermissionModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return super().get_queryset()
+        category = self.request.query_params.get('category', None)
+        if category is not None:
+            return self.queryset.filter(category=category)
         try:
             followigs = Profile.get_followin(
                 self.request)
