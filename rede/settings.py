@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rede_social',
     'corsheaders',
     'emailer',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
