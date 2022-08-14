@@ -72,6 +72,10 @@ urlpatterns = [
     path('post/user/<int:pk>/',
          PostViewSet.as_view({'get': 'postsOfuser'}), name='postsOfuser'),
 
+
+    path('user/followers/<int:pk>/',
+         UserViewSet.as_view({'get': 'get_folowers'}), name='get_folowers'),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

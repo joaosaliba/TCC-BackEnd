@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework import filters
+from rede_social.models import Following
 
 from rede_social.pagination.LargeResultsSetPagination import StandardResultsSetPagination
 
@@ -43,6 +44,19 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserSerializer
         else:
             return UserGetSerializer
+
+    def get_folowers(self, request, pk=None):
+
+        followers = Following.objects.filter(
+            followin=pk)
+        queryset = User.objects.filter(id__in=followers.values('user'))
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class StudentViewSet(MixedPermissionModelViewSet):
