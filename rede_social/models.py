@@ -189,3 +189,15 @@ class Announcement(models.Model):
 
     class Meta:
         ordering = ['-created_at', ]
+
+
+class Forms (models.Model):
+    title = models.CharField(_('Title'), max_length=200)
+    link = models.CharField(max_length=4000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
+        related_name='forms', editable=False, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-created_at', ]
