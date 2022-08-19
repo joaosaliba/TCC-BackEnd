@@ -10,8 +10,6 @@ class GroupSerializer(serializers.ModelSerializer):
     created_by = UserToPostGetSerializer(read_only=True)
     participants_count = serializers.ReadOnlyField(
         source='get_participants_count', read_only=True)
-    participants = UserToPostGetSerializer(
-        many=True, required=False)
 
     class Meta:
         model = Group

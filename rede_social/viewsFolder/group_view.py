@@ -6,6 +6,7 @@ from rede_auth.permissions import IsTeacher
 from rede_auth.views.mixed_view import MixedPermissionModelViewSet
 from rede_social.models import Group
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rede_social.pagination.LargeResultsSetPagination import StandardResultsSetPagination
 
 from rede_social.serializers.group_serializer import GroupSerializer
 
@@ -13,6 +14,7 @@ from rede_social.serializers.group_serializer import GroupSerializer
 class GroupViewSet(MixedPermissionModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    pagination_class = StandardResultsSetPagination
     permission_classes_by_action = {
         'create': [IsAuthenticated],
         'list': [IsAuthenticated],

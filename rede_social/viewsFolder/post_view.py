@@ -34,6 +34,9 @@ class PostViewSet(MixedPermissionModelViewSet):
         category = self.request.query_params.get('category', None)
         if category is not None:
             return self.queryset.filter(category=category)
+        group = self.request.query_params.get('group', None)
+        if group is not None:
+            return self.queryset.filter(group=group)
         try:
             followigs = Profile.get_followin(
                 self.request)
