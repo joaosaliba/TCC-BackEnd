@@ -88,7 +88,37 @@ class Category(models.Model):
         return self.name
 
 
+class Group(models.Model):
+    title = models.CharField('title', max_length=150, default=None)
+    participants = models.ManyToManyField(
+        User, related_name="participants", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(getattr(
+        settings, 'AUTH_USER_MODEL'),
+        related_name='group_created_by', default=None, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+
+    @classmethod
+    def join(self, group, another_account):
+        obj, create = self.objects.get_or_create(id=group.id)
+        obj.participants.add(another_account)
+        pass
+
+    @classmethod
+    def unjoin(self, group, another_account):
+        obj, create = self.objects.get_or_create(id=group.id)
+        obj.participants.remove(another_account)
+
+    def get_participants_count(self):
+        return self.participants.count()
+
+    def __str__(self):
+        return self.title
+
+
 class Post(models.Model):
+    group = models.ForeignKey(
+        Group, on_delete=models.CASCADE, default=None, null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, default=None, null=True, blank=True)
     body = models.TextField(_('body'), null=False, blank=False)

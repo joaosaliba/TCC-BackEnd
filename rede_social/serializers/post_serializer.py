@@ -1,5 +1,6 @@
 from numpy import empty, source
 from rede_auth.serializers.user_serializer import UserToPostGetSerializer
+from rede_social.serializers.group_serializer import GroupGetSerializer
 from .category_serializer import CategorySerializer
 from rede_social.serializers.comments_serializer import CommentsGetSerializer
 from rest_framework import serializers
@@ -12,6 +13,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
+            'group',
             'category',
             'body',
             'post_image',
@@ -52,12 +54,14 @@ class PostGetSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField(
         source='get_comments_count', read_only=True)
     category = CategorySerializer(read_only=True)
+    group = GroupGetSerializer(read_only=True)
 
     class Meta:
         model = Post
         fields = [
             'id',
             'category',
+            'group',
             'body',
             'post_image',
             'post_file',

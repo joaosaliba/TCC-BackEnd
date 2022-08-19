@@ -27,6 +27,7 @@ from rede_social.viewsFolder.comments_like_view import CommentLikeViewSet
 from rede_social.viewsFolder.comments_view import CommentsViewSet
 from rede_social.viewsFolder.follow_view import FollowViewSet
 from rede_social.viewsFolder.forms_views import FormsViewSet
+from rede_social.viewsFolder.group_view import GroupViewSet
 from rede_social.viewsFolder.post_like_view import PostLikeViewSet
 from rede_social.viewsFolder.post_view import PostViewSet
 from rede_social.viewsFolder.profile_view import ProfileViewSet
@@ -53,6 +54,7 @@ router.register(r'likePost', PostLikeViewSet)
 router.register(r'likeComment', CommentLikeViewSet)
 router.register(r'follow', FollowViewSet)
 router.register(r'forms', FormsViewSet)
+router.register(r'group', GroupViewSet)
 
 
 urlpatterns = [
@@ -78,6 +80,8 @@ urlpatterns = [
     path('user/followers/<int:pk>/',
          UserViewSet.as_view({'get': 'get_folowers'}), name='get_folowers'),
 
+    path('group/join/<int:pk>/',
+         GroupViewSet.as_view({'post': 'joinOrUnjoinGroup'}), name='joinOrUnjoinGroup'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
