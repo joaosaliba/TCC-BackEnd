@@ -1,6 +1,7 @@
 
 
 from urllib import request
+from xmlrpc.client import Boolean
 from rede_auth.models import User
 from rede_auth.permissions import IsSameUser
 from rede_auth.views.mixed_view import MixedPermissionModelViewSet
@@ -14,6 +15,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
 from django.db.models import Q
+from datetime import date, timedelta
+from django.db.models import Count
 
 
 class PostViewSet(MixedPermissionModelViewSet):
@@ -64,6 +67,26 @@ class PostViewSet(MixedPermissionModelViewSet):
 
         queryset = Post.objects.filter(
             created_by=pk)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    def weeklyLikeRanking(self, request):
+        like = self.request.query_params.get('like', None)
+        today = date.today()
+        start = today - timedelta(days=today.weekday())
+        end = start + timedelta(days=6)
+        like = Boolean
+        if(like == True or like == 'true'):
+            queryset = Post.objects.filter(
+                Q(created_at__range=(start, end))).annotate(num_deslikes=Count('postlike__liked_by', distinct=True)).order_by('-num_deslikes')
+        else:
+            queryset = Post.objects.filter(
+                Q(created_at__range=(start, end))).annotate(num_deslikes=Count('postlike__disliked_by', distinct=True)).order_by('-num_deslikes')
 
         page = self.paginate_queryset(queryset)
         if page is not None:
