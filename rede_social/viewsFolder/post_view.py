@@ -17,6 +17,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.db.models import Q
 from datetime import date, timedelta
 from django.db.models import Count
+from django.utils import timezone
 
 
 class PostViewSet(MixedPermissionModelViewSet):
@@ -77,16 +78,19 @@ class PostViewSet(MixedPermissionModelViewSet):
 
     def weeklyLikeRanking(self, request):
         like = self.request.query_params.get('like', None)
-        today = date.today()
+        today = timezone.now()
         start = today - timedelta(days=today.weekday())
         end = start + timedelta(days=6)
-        like = Boolean
+        print(like)
         if(like == True or like == 'true'):
+            print("like")
             queryset = Post.objects.filter(
-                Q(created_at__range=(start, end))).annotate(num_deslikes=Count('postlike__liked_by', distinct=True)).order_by('-num_deslikes')
+                Q(created_at__range=(start, end))).annotate(num_likes=Count('postlike__liked_by', distinct=True)).order_by('-num_likes')[:1]
         else:
+            print("dislike")
+
             queryset = Post.objects.filter(
-                Q(created_at__range=(start, end))).annotate(num_deslikes=Count('postlike__disliked_by', distinct=True)).order_by('-num_deslikes')
+                Q(created_at__range=(start, end))).annotate(num_deslikes=Count('postlike__disliked_by', distinct=True)).order_by('-num_deslikes')[:1]
 
         page = self.paginate_queryset(queryset)
         if page is not None:

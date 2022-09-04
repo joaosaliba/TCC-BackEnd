@@ -75,7 +75,7 @@ urlpatterns = [
 
     path('post/user/<int:pk>/',
          PostViewSet.as_view({'get': 'postsOfuser'}), name='postsOfuser'),
-    path('post/like-ranking/',
+    path('postlike/ranking/',
          PostViewSet.as_view({'get': 'weeklyLikeRanking'}), name='weeklyLikeRanking'),
 
     path('user/followers/<int:pk>/',

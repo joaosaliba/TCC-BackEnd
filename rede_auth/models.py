@@ -27,6 +27,9 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    class Meta:
+        ordering = ['-id']
+
 
 User._meta.get_field('username')._unique = False
 
