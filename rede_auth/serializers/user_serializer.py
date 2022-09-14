@@ -83,9 +83,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         profile = Profile.objects.get(user=instance)
-        profile_data = validated_data.pop('profile')
-        for field in profile_data:
-            profile.__setattr__(field, profile_data.get(field))
+        profile_data = validated_data.pop('profile', None)
+        if profile_data is not None:
+            for field in profile_data:
+                profile.__setattr__(field, profile_data.get(field))
         profile.save()
         for field in validated_data:
             if field == 'password':
